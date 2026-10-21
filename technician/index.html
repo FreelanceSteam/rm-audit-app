@@ -125,56 +125,69 @@
     </p>
 
     <p class="credit">Designed by Nagendra Yadav</p>
-  </main>
+  </main>   
+<script>
+  const APP_URL =
+    "https://script.google.com/macros/s/AKfycbyjSKykm4rTutnb9EOUyHf0HFAWM8uhcf7jR8EM3R2Oo3O6wc_v4eg6jdY9EeIHkaO5/exec";
 
-  <script>
-    const APP_URL =
-      "https://script.google.com/macros/s/AKfycbyjSKykm4rTutnb9EOUyHf0HFAWM8uhcf7jR8EM3R2Oo3O6wc_v4eg6jdY9EeIHkaO5/exec";
+  const openButton = document.getElementById("openApp");
+  const installButton = document.getElementById("installApp");
 
-    const openButton = document.getElementById("openApp");
-    const installButton = document.getElementById("installApp");
+  let deferredInstallPrompt = null;
 
-    let deferredInstallPrompt = null;
+  const params = new URLSearchParams(window.location.search);
+  const incomingToken = params.get("token");
 
-    openButton.addEventListener("click", () => {
-      window.location.href = APP_URL;
-    });
+  if (incomingToken) {
+    localStorage.setItem("rm_technician_token", incomingToken);
+  }
 
-    window.addEventListener("beforeinstallprompt", (event) => {
-      event.preventDefault();
-      deferredInstallPrompt = event;
-      installButton.hidden = false;
-    });
+  openButton.addEventListener("click", () => {
+    const token = localStorage.getItem("rm_technician_token");
 
-    installButton.addEventListener("click", async () => {
-      if (!deferredInstallPrompt) {
-        alert(
-          "Install prompt is not available. Open Chrome menu and choose Install app or Add to Home screen."
-        );
-        return;
-      }
-
-      deferredInstallPrompt.prompt();
-      await deferredInstallPrompt.userChoice;
-
-      deferredInstallPrompt = null;
-      installButton.hidden = true;
-    });
-
-    window.addEventListener("appinstalled", () => {
-      installButton.hidden = true;
-      deferredInstallPrompt = null;
-    });
-
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker
-          .register("./service-worker.js")
-          .catch((error) => {
-            console.error("Service worker registration failed:", error);
-          });
-      });
+    if (!token) {
+      alert("Please open your personal technician link first.");
+      return;
     }
+
+    const target = new URL(APP_URL);
+    target.searchParams.set("token", token);
+    window.location.href = target.toString();
+  });
+
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    installButton.hidden = false;
+  });
+
+  installButton.addEventListener("click", async () => {
+    if (!deferredInstallPrompt) {
+      alert("Open Chrome menu and choose Install app or Add to Home screen.");
+      return;
+    }
+
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    installButton.hidden = true;
+  });
+
+  window.addEventListener("appinstalled", () => {
+    installButton.hidden = true;
+    deferredInstallPrompt = null;
+  });
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker
+        .register("./service-worker.js")
+        .catch((error) => {
+          console.error("Service worker registration failed:", error);
+        });
+    });
+  }
+
   </script>
 </body>
 </html>
