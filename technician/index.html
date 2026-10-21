@@ -5,24 +5,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0754c8">
+  <meta name="description" content="RM Audit Technician App">
   <title>RM Audit Technician</title>
 
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/png" href="./rm-audit-technician-192.png">
-
-
+  <link rel="apple-touch-icon" href="./rm-audit-technician-192.png">
 
   <style>
-    .credit {
-  margin-top: 14px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1px;
-  color: #ffd84d;
-  opacity: 0.95;
-}
-    
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -46,24 +39,21 @@
       box-shadow: 0 18px 45px rgba(0,0,0,.3);
     }
 
-    img {
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
-  border-radius: 24px;
-  filter: drop-shadow(0 8px 12px rgba(0,0,0,.25));
-}
+    .logo {
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      border-radius: 24px;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,.25));
+    }
 
-@media (max-width: 480px) {
-  img {
-    width: 180px;
-    height: 180px;
-  }
-}
+    h1 {
+      margin: 18px 0 8px;
+    }
 
-    h1 { margin: 18px 0 8px; }
-
-    p { color: #e0eaff; }
+    p {
+      color: #e0eaff;
+    }
 
     button {
       width: 100%;
@@ -78,39 +68,111 @@
       cursor: pointer;
     }
 
-    .note { font-size: 12px; margin-top: 18px; }
+    #installApp {
+      width: auto;
+      margin-top: 10px;
+      padding: 9px 18px;
+      border: 1px solid white;
+      border-radius: 8px;
+      background: white;
+      color: #0754c8;
+      font-size: 12px;
+    }
+
+    #installApp[hidden] {
+      display: none;
+    }
+
+    .note {
+      font-size: 12px;
+      margin-top: 18px;
+    }
+
+    .credit {
+      margin-top: 14px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #ffd84d;
+      opacity: 0.95;
+    }
+
+    @media (max-width: 480px) {
+      .logo {
+        width: 180px;
+        height: 180px;
+      }
+    }
   </style>
 </head>
 
 <body>
   <main>
-    <img src="./rm-audit-technician-192.png" alt="RM Audit Technician">
+    <img
+      class="logo"
+      src="./rm-audit-technician-192.png"
+      alt="RM Audit Technician"
+    >
+
     <h1>RM Audit</h1>
     <p>Technician Audit App</p>
 
     <button id="openApp">OPEN RM AUDIT</button>
+    <button id="installApp" hidden>INSTALL APP</button>
 
-    
-<p class="note">
-  Secure technician access is handled by the official audit app.
-</p>
+    <p class="note">
+      Secure technician access is handled by the official audit app.
+    </p>
 
-<p class="credit">Designed by Nagendra Yadav</p>
-
+    <p class="credit">Designed by Nagendra Yadav</p>
   </main>
 
   <script>
     const APP_URL =
       "https://script.google.com/macros/s/AKfycbyjSKykm4rTutnb9EOUyHf0HFAWM8uhcf7jR8EM3R2Oo3O6wc_v4eg6jdY9EeIHkaO5/exec";
 
-    document.getElementById("openApp").addEventListener("click", () => {
+    const openButton = document.getElementById("openApp");
+    const installButton = document.getElementById("installApp");
+
+    let deferredInstallPrompt = null;
+
+    openButton.addEventListener("click", () => {
       window.location.href = APP_URL;
+    });
+
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      installButton.hidden = false;
+    });
+
+    installButton.addEventListener("click", async () => {
+      if (!deferredInstallPrompt) {
+        alert(
+          "Install prompt is not available. Open Chrome menu and choose Install app or Add to Home screen."
+        );
+        return;
+      }
+
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+
+      deferredInstallPrompt = null;
+      installButton.hidden = true;
+    });
+
+    window.addEventListener("appinstalled", () => {
+      installButton.hidden = true;
+      deferredInstallPrompt = null;
     });
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./service-worker.js")
-          .catch(error => console.log("Offline setup unavailable:", error));
+        navigator.serviceWorker
+          .register("./service-worker.js")
+          .catch((error) => {
+            console.error("Service worker registration failed:", error);
+          });
       });
     }
   </script>
