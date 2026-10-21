@@ -126,6 +126,7 @@
 
     <p class="credit">Designed by Nagendra Yadav</p>
   </main>   
+
 <script>
   const APP_URL =
     "https://script.google.com/macros/s/AKfycbyjSKykm4rTutnb9EOUyHf0HFAWM8uhcf7jR8EM3R2Oo3O6wc_v4eg6jdY9EeIHkaO5/exec";
@@ -135,18 +136,28 @@
 
   let deferredInstallPrompt = null;
 
+  // Save token received from the technician's personal launcher link.
   const params = new URLSearchParams(window.location.search);
   const incomingToken = params.get("token");
 
   if (incomingToken) {
     localStorage.setItem("rm_technician_token", incomingToken);
+
+    // Remove token from the visible URL after saving it.
+    window.history.replaceState(
+      {},
+      document.title,
+      window.location.pathname
+    );
   }
 
-  openButton.addEventListener("click", () => {
+  openButton.addEventListener("click", function () {
     const token = localStorage.getItem("rm_technician_token");
 
     if (!token) {
-      alert("Please open your personal technician link first.");
+      alert(
+        "Technician link missing. Please open your personal RM Audit link first."
+      );
       return;
     }
 
@@ -155,39 +166,42 @@
     window.location.href = target.toString();
   });
 
-  window.addEventListener("beforeinstallprompt", (event) => {
+  window.addEventListener("beforeinstallprompt", function (event) {
     event.preventDefault();
     deferredInstallPrompt = event;
     installButton.hidden = false;
   });
 
-  installButton.addEventListener("click", async () => {
+  installButton.addEventListener("click", async function () {
     if (!deferredInstallPrompt) {
-      alert("Open Chrome menu and choose Install app or Add to Home screen.");
+      alert(
+        "Chrome menu se Install app ya Add to Home screen select karein."
+      );
       return;
     }
 
     deferredInstallPrompt.prompt();
     await deferredInstallPrompt.userChoice;
+
     deferredInstallPrompt = null;
     installButton.hidden = true;
   });
 
-  window.addEventListener("appinstalled", () => {
+  window.addEventListener("appinstalled", function () {
     installButton.hidden = true;
     deferredInstallPrompt = null;
   });
 
   if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
+    window.addEventListener("load", function () {
       navigator.serviceWorker
         .register("./service-worker.js")
-        .catch((error) => {
+        .catch(function (error) {
           console.error("Service worker registration failed:", error);
         });
     });
   }
+</script>
 
-  </script>
 </body>
 </html>
