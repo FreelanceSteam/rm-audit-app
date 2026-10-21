@@ -127,6 +127,7 @@
     <p class="credit">Designed by Nagendra Yadav</p>
   </main>   
 
+
 <script>
   const APP_URL =
     "https://script.google.com/macros/s/AKfycbyjSKykm4rTutnb9EOUyHf0HFAWM8uhcf7jR8EM3R2Oo3O6wc_v4eg6jdY9EeIHkaO5/exec";
@@ -136,14 +137,14 @@
 
   let deferredInstallPrompt = null;
 
-  // Save token received from the technician's personal launcher link.
+  // Save the token from the personal technician link.
   const params = new URLSearchParams(window.location.search);
-  const incomingToken = params.get("token");
+  const incomingToken = (params.get("token") || "").trim();
 
   if (incomingToken) {
     localStorage.setItem("rm_technician_token", incomingToken);
 
-    // Remove token from the visible URL after saving it.
+    // Hide the token from the address bar after saving it.
     window.history.replaceState(
       {},
       document.title,
@@ -156,7 +157,7 @@
 
     if (!token) {
       alert(
-        "Technician link missing. Please open your personal RM Audit link first."
+        "Please open your individual RM Audit technician link first."
       );
       return;
     }
@@ -197,11 +198,15 @@
       navigator.serviceWorker
         .register("./service-worker.js")
         .catch(function (error) {
-          console.error("Service worker registration failed:", error);
+          console.error(
+            "Service worker registration failed:",
+            error
+          );
         });
     });
   }
 </script>
+
 
 </body>
 </html>
