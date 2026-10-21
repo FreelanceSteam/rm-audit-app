@@ -2,7 +2,7 @@
 {
   "id": "./",
   "name": "RM Audit Technician",
-  "short_name": "RM Technician",
+  "short_name": "RM Audit",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
