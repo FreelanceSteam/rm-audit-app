@@ -11,7 +11,35 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/png" href="./rm-audit-admin-192.png">
   <link rel="apple-touch-icon" href="./rm-audit-admin-192.png">
+@media (min-width: 768px) {
+  main {
+    width: min(760px, 90vw);
+    max-width: 760px;
+    padding: 56px 48px;
+    border-radius: 32px;
+  }
 
+  main .logo,
+  main img {
+    width: 220px;
+    height: 220px;
+    object-fit: contain;
+  }
+
+  main h1 {
+    font-size: 42px;
+  }
+
+  main p {
+    font-size: 18px;
+  }
+
+  main button {
+    min-height: 64px;
+    font-size: 18px;
+  }
+}
+  
   <style>
     * { box-sizing: border-box; }
 
