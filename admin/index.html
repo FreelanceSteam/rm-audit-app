@@ -1,1 +1,168 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0754c8">
+  <meta name="description" content="RM Audit Admin App">
+  <title>RM Audit Admin</title>
+
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/png" href="./rm-audit-admin-192.png">
+  <link rel="apple-touch-icon" href="./rm-audit-admin-192.png">
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      font-family: Arial, sans-serif;
+      color: white;
+      text-align: center;
+      background: linear-gradient(145deg, #0754c8, #06245d);
+    }
+
+    main {
+      width: 100%;
+      max-width: 360px;
+      padding: 26px 20px 30px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.12);
+      box-shadow: 0 15px 40px rgba(0,0,0,.22);
+    }
+
+    .logo {
+      display: block;
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      margin: 0 auto 18px;
+    }
+
+    p {
+      font-size: 14px;
+      margin: 0 0 25px;
+    }
+
+    button {
+      width: 100%;
+      min-height: 48px;
+      border: 0;
+      border-radius: 12px;
+      background: #ffca18;
+      color: #061b43;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .7;
+      cursor: wait;
+    }
+
+    #installApp {
+      margin-top: 12px;
+      background: white;
+    }
+
+    .note {
+      font-size: 11px;
+      margin: 18px 0 0;
+    }
+
+    .credit {
+      margin: 12px 0 0;
+      font-size: 11px;
+      font-weight: bold;
+      color: #ffca18;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <img
+      class="logo"
+      src="./rm-audit-admin-192.png"
+      alt="RM Audit Admin"
+    >
+
+    <p>Admin Management App</p>
+
+    <button id="openApp">OPEN ADMIN APP</button>
+    <button id="installApp" hidden>INSTALL APP</button>
+
+    <p class="note">
+      Secure access is handled by the official Admin app.
+    </p>
+
+    <p class="credit">Designed by Nagendra Yadav</p>
+  </main>
+
+  <script>
+    // Existing official Admin Web App URL.
+    // Keep the URL from your RM Admin sheet, cell B3.
+    const APP_URL = "PASTE_EXISTING_ADMIN_WEB_APP_URL_HERE";
+
+    const openButton = document.getElementById("openApp");
+    const installButton = document.getElementById("installApp");
+
+    let deferredInstallPrompt = null;
+
+    openButton.addEventListener("click", function () {
+      const appUrl = APP_URL.trim();
+
+      if (!appUrl.startsWith("https://script.google.com/")) {
+        alert("Please configure the existing Admin Web App URL first.");
+        return;
+      }
+
+      openButton.disabled = true;
+      openButton.textContent = "OPENING ADMIN APP...";
+
+      window.location.assign(appUrl);
+    });
+
+    window.addEventListener("beforeinstallprompt", function (event) {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      installButton.hidden = false;
+    });
+
+    installButton.addEventListener("click", async function () {
+      if (!deferredInstallPrompt) {
+        alert("Chrome menu se Install app ya Add to Home screen select karein.");
+        return;
+      }
+
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      installButton.hidden = true;
+    });
+
+    window.addEventListener("appinstalled", function () {
+      installButton.hidden = true;
+      deferredInstallPrompt = null;
+    });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker
+          .register("./service-worker.js")
+          .catch(function (error) {
+            console.error("Service worker registration failed:", error);
+          });
+      });
+    }
+  </script>
+</body>
+</html>
+
