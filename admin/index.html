@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,45 +11,20 @@
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" type="image/png" href="./rm-audit-admin-192.png">
   <link rel="apple-touch-icon" href="./rm-audit-admin-192.png">
-@media (min-width: 768px) {
-  main {
-    width: min(760px, 90vw);
-    max-width: 760px;
-    padding: 56px 48px;
-    border-radius: 32px;
-  }
 
-  main .logo,
-  main img {
-    width: 220px;
-    height: 220px;
-    object-fit: contain;
-  }
-
-  main h1 {
-    font-size: 42px;
-  }
-
-  main p {
-    font-size: 18px;
-  }
-
-  main button {
-    min-height: 64px;
-    font-size: 18px;
-  }
-}
-  
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
       min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 24px;
       font-family: Arial, sans-serif;
       color: white;
       text-align: center;
@@ -58,58 +33,126 @@
 
     main {
       width: 100%;
-      max-width: 360px;
-      padding: 26px 20px 30px;
-      border-radius: 22px;
-      background: rgba(255,255,255,.12);
-      box-shadow: 0 15px 40px rgba(0,0,0,.22);
+      max-width: 420px;
+      padding: 32px 26px;
+      border-radius: 26px;
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.22);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
     }
 
     .logo {
       display: block;
-      width: 150px;
-      height: 150px;
+      width: 160px;
+      height: 160px;
       object-fit: contain;
-      margin: 0 auto 18px;
+      margin: 0 auto 22px;
     }
 
-    p {
-      font-size: 14px;
-      margin: 0 0 25px;
+    .subtitle {
+      font-size: 16px;
+      margin: 0 0 28px;
     }
 
     button {
+      display: block;
       width: 100%;
-      min-height: 48px;
+      min-height: 54px;
+      padding: 14px 18px;
       border: 0;
       border-radius: 12px;
       background: #ffca18;
       color: #061b43;
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 700;
       cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 7px 18px rgba(0, 0, 0, 0.2);
     }
 
     button:disabled {
-      opacity: .7;
+      opacity: 0.7;
       cursor: wait;
+      transform: none;
     }
 
     #installApp {
-      margin-top: 12px;
+      margin-top: 14px;
       background: white;
     }
 
     .note {
-      font-size: 11px;
-      margin: 18px 0 0;
+      font-size: 12px;
+      line-height: 1.6;
+      margin: 22px 0 0;
     }
 
     .credit {
-      margin: 12px 0 0;
-      font-size: 11px;
+      margin: 14px 0 0;
+      font-size: 12px;
       font-weight: bold;
       color: #ffca18;
+    }
+
+    /* Larger launcher for desktop and installed desktop app */
+    @media (min-width: 768px) {
+      body {
+        padding: 40px;
+      }
+
+      main {
+        width: min(760px, 90vw);
+        max-width: 760px;
+        padding: 56px 48px;
+        border-radius: 32px;
+      }
+
+      .logo {
+        width: 220px;
+        height: 220px;
+        margin-bottom: 26px;
+      }
+
+      .subtitle {
+        font-size: 22px;
+        margin-bottom: 34px;
+      }
+
+      button {
+        min-height: 64px;
+        font-size: 19px;
+        border-radius: 14px;
+      }
+
+      .note {
+        font-size: 14px;
+        margin-top: 24px;
+      }
+
+      .credit {
+        font-size: 14px;
+        margin-top: 16px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      body {
+        padding: 14px;
+      }
+
+      main {
+        padding: 24px 18px;
+      }
+
+      .logo {
+        width: 130px;
+        height: 130px;
+      }
     }
   </style>
 </head>
@@ -122,7 +165,7 @@
       alt="RM Audit Admin"
     >
 
-    <p>Admin Management App</p>
+    <p class="subtitle">Admin Management App</p>
 
     <button id="openApp">OPEN ADMIN APP</button>
     <button id="installApp" hidden>INSTALL APP</button>
@@ -135,9 +178,8 @@
   </main>
 
   <script>
-    // Existing official Admin Web App URL.
-    // Keep the URL from your RM Admin sheet, cell B3.
-  const APP_URL = "https://script.google.com/macros/s/AKfycbyjSKykm4rTutnb9EOUyHf0HFAWM8uhcf7jR8EM3R2Oo3O6wc_v4eg6jdY9EeIHkaO5/exec?page=admin";
+    // Existing official Admin Web App URL
+    const APP_URL = "https://script.google.com/macros/s/AKfycbyjSKykm4rTutnb9EOUyHf0HFAWM8uhcf7jR8EM3R2Oo3O6wc_v4eg6jdY9EeIHkaO5/exec?page=admin";
 
     const openButton = document.getElementById("openApp");
     const installButton = document.getElementById("installApp");
@@ -172,6 +214,7 @@
 
       deferredInstallPrompt.prompt();
       await deferredInstallPrompt.userChoice;
+
       deferredInstallPrompt = null;
       installButton.hidden = true;
     });
@@ -186,11 +229,14 @@
         navigator.serviceWorker
           .register("./service-worker.js")
           .catch(function (error) {
-            console.error("Service worker registration failed:", error);
+            console.error(
+              "Service worker registration failed:",
+              error
+            );
           });
       });
     }
   </script>
 </body>
 </html>
-
+```
