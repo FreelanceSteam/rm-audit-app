@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,9 +13,7 @@
   <link rel="apple-touch-icon" href="./rm-audit-technician-192.png">
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -47,13 +45,8 @@
       filter: drop-shadow(0 8px 12px rgba(0,0,0,.25));
     }
 
-    h1 {
-      margin: 18px 0 8px;
-    }
-
-    p {
-      color: #e0eaff;
-    }
+    h1 { margin: 18px 0 8px; }
+    p { color: #e0eaff; }
 
     button {
       width: 100%;
@@ -79,29 +72,18 @@
       font-size: 12px;
     }
 
-    #installApp[hidden] {
-      display: none;
-    }
-
-    .note {
-      font-size: 12px;
-      margin-top: 18px;
-    }
-
+    #installApp[hidden] { display: none; }
+    .note { font-size: 12px; margin-top: 18px; }
     .credit {
       margin-top: 14px;
       font-size: 12px;
       font-weight: 600;
       letter-spacing: 1px;
       color: #ffd84d;
-      opacity: 0.95;
     }
 
     @media (max-width: 480px) {
-      .logo {
-        width: 180px;
-        height: 180px;
-      }
+      .logo { width: 180px; height: 180px; }
     }
   </style>
 </head>
@@ -125,88 +107,88 @@
     </p>
 
     <p class="credit">Designed by Nagendra Yadav</p>
-  </main>   
+  </main>
 
+  <script>
+    const APP_URL =
+      "https://script.google.com/macros/s/AKfycbyjSKykm4rTutnb9EOUyHf0HFAWM8uhcf7jR8EM3R2Oo3O6wc_v4eg6jdY9EeIHkaO5/exec";
 
-<script>
-  const APP_URL =
-    "https://script.google.com/macros/s/AKfycbyjSKykm4rTutnb9EOUyHf0HFAWM8uhcf7jR8EM3R2Oo3O6wc_v4eg6jdY9EeIHkaO5/exec";
+    const TOKEN_KEY = "rm_technician_token";
+    const openButton = document.getElementById("openApp");
+    const installButton = document.getElementById("installApp");
 
-  const openButton = document.getElementById("openApp");
-  const installButton = document.getElementById("installApp");
+    let deferredInstallPrompt = null;
 
-  let deferredInstallPrompt = null;
+    // Read a token only when this page is opened with a personal link.
+    const params = new URLSearchParams(window.location.search);
+    const incomingToken = (params.get("token") || "").trim();
 
-  // Save the token from the personal technician link.
-  const params = new URLSearchParams(window.location.search);
-  const incomingToken = (params.get("token") || "").trim();
+    if (incomingToken) {
+      localStorage.setItem(TOKEN_KEY, incomingToken);
 
-  if (incomingToken) {
-    localStorage.setItem("rm_technician_token", incomingToken);
-
-    // Hide the token from the address bar after saving it.
-    window.history.replaceState(
-      {},
-      document.title,
-      window.location.pathname
-    );
-  }
-
-  openButton.addEventListener("click", function () {
-    const token = localStorage.getItem("rm_technician_token");
-
-    if (!token) {
-      alert(
-        "Please open your individual RM Audit technician link first."
+      // Remove the token from the visible URL after saving it.
+      window.history.replaceState(
+        {},
+        document.title,
+        window.location.pathname
       );
-      return;
     }
 
-    const target = new URL(APP_URL);
-    target.searchParams.set("token", token);
-    window.location.href = target.toString();
-  });
+    openButton.addEventListener("click", function () {
+      const token = (
+        localStorage.getItem(TOKEN_KEY) || ""
+      ).trim();
 
-  window.addEventListener("beforeinstallprompt", function (event) {
-    event.preventDefault();
-    deferredInstallPrompt = event;
-    installButton.hidden = false;
-  });
+      if (!token) {
+        alert(
+          "Technician token missing. Please open your personal RM Audit technician link first."
+        );
+        return;
+      }
 
-  installButton.addEventListener("click", async function () {
-    if (!deferredInstallPrompt) {
-      alert(
-        "Chrome menu se Install app ya Add to Home screen select karein."
-      );
-      return;
-    }
+      const target = new URL(APP_URL);
+      target.searchParams.set("token", token);
 
-    deferredInstallPrompt.prompt();
-    await deferredInstallPrompt.userChoice;
-
-    deferredInstallPrompt = null;
-    installButton.hidden = true;
-  });
-
-  window.addEventListener("appinstalled", function () {
-    installButton.hidden = true;
-    deferredInstallPrompt = null;
-  });
-
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", function () {
-      navigator.serviceWorker
-        .register("./service-worker.js")
-        .catch(function (error) {
-          console.error(
-            "Service worker registration failed:",
-            error
-          );
-        });
+      // Open the official Apps Script technician app.
+      window.location.assign(target.toString());
     });
-  }
-</script>
 
+    window.addEventListener("beforeinstallprompt", function (event) {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      installButton.hidden = false;
+    });
 
+    installButton.addEventListener("click", async function () {
+      if (!deferredInstallPrompt) {
+        alert(
+          "Chrome menu se Install app ya Add to Home screen select karein."
+        );
+        return;
+      }
+
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+
+      deferredInstallPrompt = null;
+      installButton.hidden = true;
+    });
+
+    window.addEventListener("appinstalled", function () {
+      installButton.hidden = true;
+      deferredInstallPrompt = null;
+    });
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", function () {
+        navigator.serviceWorker
+          .register("./service-worker.js")
+          .catch(function (error) {
+            console.error("Service worker registration failed:", error);
+          });
+      });
+    }
+  </script>
 </body>
 </html>
+```
