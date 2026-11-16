@@ -7,7 +7,48 @@
   <meta name="description" content="RM Audit Technician App">
   <title>RM Audit Technician</title>
 
-  <link rel="manifest" href="./manifest.webmanifest">
+<script>
+  (function () {
+    const launchURL = new URL(window.location.href);
+    launchURL.hash = "";
+
+    const manifest = {
+      id: launchURL.href,
+      name: "RM Audit Technician",
+      short_name: "RM Audit",
+      start_url: launchURL.href,
+      scope: new URL("./", launchURL).href,
+      display: "standalone",
+      orientation: "portrait",
+      background_color: "#06245d",
+      theme_color: "#0754c8",
+      icons: [
+        {
+          src: "./rm-audit-technician-192.png",
+          sizes: "192x192",
+          type: "image/png",
+          purpose: "any"
+        },
+        {
+          src: "./rm-audit-technician-512.png",
+          sizes: "512x512",
+          type: "image/png",
+          purpose: "any"
+        }
+      ]
+    };
+
+    const blob = new Blob(
+      [JSON.stringify(manifest)],
+      { type: "application/manifest+json" }
+    );
+
+    const manifestLink = document.createElement("link");
+    manifestLink.rel = "manifest";
+    manifestLink.href = URL.createObjectURL(blob);
+    document.head.appendChild(manifestLink);
+  })();
+</script>
   <link rel="icon" type="image/png" href="./rm-audit-technician-192.png">
   <link rel="apple-touch-icon" href="./rm-audit-technician-192.png">
 
@@ -98,11 +139,20 @@
     openButton.addEventListener("click", function () {
       const token = getTechnicianToken();
       if (!token) {
-        alert(
-          "Technician token missing.\n\n" +
-          "Please open your personal RM Audit launcher link first. " +
-          "The link must contain ?token= followed by your actual technician token."
-        );
+      let savedToken = "MISSING";
+
+try {
+  savedToken = localStorage.getItem(TOKEN_KEY) ? "FOUND" : "MISSING";
+} catch (error) {
+  savedToken = "BLOCKED";
+}
+
+alert(
+  "TOKEN DEBUG\n\n" +
+  "Current URL: " + window.location.href + "\n\n" +
+  "URL Token: " + (incomingToken ? "FOUND" : "MISSING") + "\n\n" +
+  "Saved Token: " + savedToken
+);
         return;
       }
 
