@@ -148,10 +148,9 @@ try {
 }
 
 alert(
-  "TOKEN DEBUG\n\n" +
-  "Current URL: " + window.location.href + "\n\n" +
-  "URL Token: " + (incomingToken ? "FOUND" : "MISSING") + "\n\n" +
-  "Saved Token: " + savedToken
+  "Technician token missing.\n\n" +
+  "Please open your personal RM Audit launcher link first. " +
+  "The link must contain ?token= followed by your actual technician token."
 );
         return;
       }
